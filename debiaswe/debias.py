@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+# @Author: Ashutosh Tiwari
+# @Email: checkashu@gmail.com
+# @Date:   2023-01-30 11:47:55
+# @Filepath: debiaswe/debias.py
 from __future__ import print_function, division
 import we
 import json
@@ -14,6 +19,11 @@ Man is to Computer Programmer as Woman is to Homemaker? Debiasing Word Embedding
 Tolga Bolukbasi, Kai-Wei Chang, James Zou, Venkatesh Saligrama, and Adam Kalai
 2016
 """
+# definitional [['woman', 'man'], ['girl', 'boy'], ['she', 'he'], ['mother', 'father'], ['daughter', 'son'], ['gal', 'guy'], ['female', 'male'], ['her', 'his'], ['herself', 'himself'], ['Mary', 'John']]
+
+# gender specific words ['he', 'his', 'He', 'her', 'she', 'him', 'She', 'man', 'women', 'men', 'His', 'woman', 'spokesman', 'wife', 'himself', 'son', 'mother', 'father', 'chairman', 'daughter', 'husband', 'guy', 'girls', 'girl', 'Her', 'boy', 'King', 'boys', 'brother', 'Chairman']
+
+# equalize [['monastery', 'convent'], ['spokesman', 'spokeswoman'], ['Catholic_priest', 'nun'], ['Dad', 'Mom'], ['Men', 'Women'], ['councilman', 'councilwoman'], ['grandpa', 'grandma'], ['grandsons', 'granddaughters'], ['prostate_cancer', 'ovarian_cancer'], ['testosterone', 'estrogen'], ['uncle', 'aunt'], ['wives', 'husbands'], ['Father', 'Mother'], ['Grandpa', 'Grandma'], ['He', 'She'], ['boy', 'girl'], ['boys', 'girls'], ['brother', 'sister'], ['brothers', 'sisters'], ['businessman', 'businesswoman'], ['chairman', 'chairwoman'], ['colt', 'filly'], ['congressman', 'congresswoman'], ['dad', 'mom'], ['dads', 'moms'], ['dudes', 'gals'], ['ex_girlfriend', 'ex_boyfriend'], ['father', 'mother'], ['fatherhood', 'motherhood'], ['fathers', 'mothers'], ['fella', 'granny'], ['fraternity', 'sorority'], ['gelding', 'mare'], ['gentleman', 'lady'], ['gentlemen', 'ladies'], ['grandfather', 'grandmother'], ['grandson', 'granddaughter'], ['he', 'she'], ['himself', 'herself'], ['his', 'her'], ['king', 'queen'], ['kings', 'queens'], ['male', 'female'], ['males', 'females'], ['man', 'woman'], ['men', 'women'], ['nephew', 'niece'], ['prince', 'princess'], ['schoolboy', 'schoolgirl'], ['son', 'daughter'], ['sons', 'daughters'], ['twin_brother', 'twin_sister']]
 
 
 def debias(E, gender_specific_words, definitional, equalize):
