@@ -5,29 +5,43 @@
 # @Filepath: graph_debiaswe/debias_graph.py
 
 # assumptions for converting to graph
-# bias direction: taken top 1 component of PCA or LDA   
+# gender specific words: node ids of group specific words, probably the one closest to centroids
 # defitional pairs: pairs of centroids of groups
-# 
-import numpy as np
-from utils import get_direction
+# equalize words: these should be equidistant from the centroids of the groups, so these are the most distant pairs
 
+import numpy as np
+from utils import get_direction, EMB_UTILS
+import we
 
 def debias_wrapper(embs, gender_specific_words, definitional, equalize, direction_method='PCA', y=None):
     nodes, dim = embs.shape
-    assert gender_specific_words.shape[1] == dim
-    assert definitional.shape == 
     direction = get_direction(embs, y, direction_method)
-    
-    
-def debias_graph(embs: np.array, gender_direction: np.array, definitional: np.array, equalizer: np.array, y:np.array=None):
-    """debias graph embeddings
+    # gender specific words are the node ids, lets have a vector of size 1x nodes
+    # where i == true denotes that it is gender specific
+    # definitional are not the node ids, but the centroids of the groups
+    # equalize are pairs of node ids
+    assert definitional.shape[1:] == (dim, 2)
+    assert direction.shape == (dim, )
+    assert equalize.shape[1:] == (2, )
 
-    Args:
-        embs (np.array): embeddings to be debiased
-        gender_direction (np.array): direction to be debiased
-        definitional (_type_): defitional pairs, may be centroid of groups
-        equalizer (_type_):  equalizer pairs, may be the most distant pairs
-        y (np.array, optional): node labels, for LDA
-    """
-    assert gender_direction.shape[0] == embs.shape[1], "gender_direction and embs should have same dimension"
+
+    for i in range(nodes):
+        if not gender_specific_words[i]:
+            embs[i] = we.drop(embs[i], direction)
+
+    EMB_UTILS.normalize(embs)
+
+    for (a,b) in definitional:
+
+        y = we.drop(embs[a] + embs[b] / 2, direction)
+        z = np.sqrt(1 - np.linalg.norm(y)**2)
+        if (embs[a] - embs[b]).dot(direction) < 0:
+            z = -z
+        embs[a] = y + z * direction
+        embs[b] = y - z * direction
+
+    EMB_UTILS.normalize(embs)
+
+    return embs
+
     

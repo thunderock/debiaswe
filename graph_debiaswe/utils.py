@@ -20,3 +20,11 @@ def get_direction(embs, y=None, method='PCA'):
         assert False, "method should be either PCA or LDA"
     return direction
 
+
+
+class EMB_UTILS(object):
+
+    @staticmethod
+    def normalize(embs):
+        norm = np.linalg.norm(embs, axis=1, keepdims=True)
+        return embs / norm
