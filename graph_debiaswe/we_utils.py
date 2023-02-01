@@ -5,6 +5,7 @@
 # @Filepath: graph_debiaswe/utils.py
 
 
+import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 

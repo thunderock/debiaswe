@@ -236,9 +236,10 @@ def text_plot_words(xs, ys, words, width = 90, height = 40, filename=None):
 def doPCA(pairs, embedding, num_components = 10):
     matrix = []
     for a, b in pairs:
-        center = (embedding.v(a) + embedding.v(b))/2
-        matrix.append(embedding.v(a) - center)
-        matrix.append(embedding.v(b) - center)
+        a, b = int(a), int(b)
+        center = (embedding[a] + embedding[b])/2
+        matrix.append(embedding[a] - center)
+        matrix.append(embedding[b] - center)
     matrix = np.array(matrix)
     pca = PCA(n_components = num_components)
     pca.fit(matrix)

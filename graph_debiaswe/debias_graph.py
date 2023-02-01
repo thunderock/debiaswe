@@ -10,37 +10,46 @@
 # equalize words: these should be equidistant from the centroids of the groups, so these are the most distant pairs
 
 import numpy as np
-from utils import get_direction, EMB_UTILS
+from we_utils import get_direction, EMB_UTILS
 import we
+from sklearn.decomposition import PCA
 
-def debias_wrapper(embs, gender_specific_words, definitional, equalize, direction_method='PCA', y=None):
+def debias_wrapper(emb, gender_specific_words, definitional, equalize, y, direction_method='PCA'):
+    embs = emb.copy()
     nodes, dim = embs.shape
+    K = np.unique(y).shape[0]
     direction = get_direction(embs, y, direction_method)
+    direction = we.doPCA(definitional, embs, num_components=1).components_[0]
     # gender specific words are the node ids, lets have a vector of size 1x nodes
     # where i == true denotes that it is gender specific
     # definitional are not the node ids, but the centroids of the groups
     # equalize are pairs of node ids
-    assert definitional.shape[1:] == (dim, 2)
+    assert definitional.shape == (K, K - 1)
     assert direction.shape == (dim, )
     assert equalize.shape[1:] == (2, )
+    assert gender_specific_words.shape[0] == K
 
 
     for i in range(nodes):
-        if not gender_specific_words[i]:
+        group = y[i]
+        if i not in gender_specific_words[group]:
             embs[i] = we.drop(embs[i], direction)
 
-    EMB_UTILS.normalize(embs)
+    embs = EMB_UTILS.normalize(embs)
 
-    for (a,b) in definitional:
-
-        y = we.drop(embs[a] + embs[b] / 2, direction)
+    for (a,b) in equalize:
+        a, b = int(a), int(b)
+        y = we.drop((embs[a] + embs[b]) / 2, direction)
+        import warnings
+        # print y value in case of warning
         z = np.sqrt(1 - np.linalg.norm(y)**2)
+
         if (embs[a] - embs[b]).dot(direction) < 0:
             z = -z
         embs[a] = y + z * direction
         embs[b] = y - z * direction
 
-    EMB_UTILS.normalize(embs)
+    embs = EMB_UTILS.normalize(embs)
 
     return embs
 
