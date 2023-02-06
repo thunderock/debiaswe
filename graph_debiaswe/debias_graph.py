@@ -14,12 +14,13 @@ from we_utils import get_direction, EMB_UTILS
 import we
 from sklearn.decomposition import PCA
 
-def debias_wrapper(emb, gender_specific_words, definitional, equalize, y, direction_method='PCA'):
+def debias_wrapper(emb, gender_specific_words, definitional, 
+        equalize, y, direction, drop_gender_specific_words=False):
     embs = emb.copy()
     nodes, dim = embs.shape
     K = np.unique(y).shape[0]
-    direction = get_direction(embs, y, direction_method)
-    direction = we.doPCA(definitional, embs, num_components=1).components_[0]
+    # direction = get_direction(embs, y, direction_method)
+    # direction = we.doPCA(definitional, embs, num_components=1).components_[0]
     # gender specific words are the node ids, lets have a vector of size 1x nodes
     # where i == true denotes that it is gender specific
     # definitional are not the node ids, but the centroids of the groups
@@ -32,8 +33,12 @@ def debias_wrapper(emb, gender_specific_words, definitional, equalize, y, direct
 
     for i in range(nodes):
         group = y[i]
-        if i not in gender_specific_words[group]:
+        if drop_gender_specific_words:
             embs[i] = we.drop(embs[i], direction)
+
+        else:
+            if i not in gender_specific_words[group]:
+                embs[i] = we.drop(embs[i], direction)
 
     embs = EMB_UTILS.normalize(embs)
 
