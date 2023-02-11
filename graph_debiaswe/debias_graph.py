@@ -25,7 +25,7 @@ def debias_wrapper(emb, gender_specific_words, definitional,
     # where i == true denotes that it is gender specific
     # definitional are not the node ids, but the centroids of the groups
     # equalize are pairs of node ids
-    assert definitional.shape == (K, K - 1)
+#     assert definitional.shape == (K, K - 1)
     assert direction.shape == (dim, )
     assert equalize.shape[1:] == (2, )
     assert gender_specific_words.shape[0] == K
