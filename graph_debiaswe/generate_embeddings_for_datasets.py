@@ -29,7 +29,7 @@ from tqdm import tqdm
 # In[3]:
 
 
-BASE = "../../final_128/{}/"
+BASE = "../../final_/{}/"
 
 def get_embs(dataset, run_no, deepwalk):
     y = pd.read_csv(BASE.format(dataset) + "node_table.csv").group_id.values
@@ -74,20 +74,20 @@ def get_embs(dataset, run_no, deepwalk):
 # In[4]:
 
 
-datasets = ["polbook", "polblog", "airport", "pokec"]
+datasets = ["polbook", "polblog", "airport", "facebook"]
 
 runs = ["one", "two", "three", "four", "five"]
 
 for dataset in datasets:
     for directory in tqdm(runs, desc=dataset + "_deepwalk"):
         embs = get_embs(dataset=dataset, run_no=directory, deepwalk=True)
-        np.save(BASE.format(dataset) + "{}_{}/{}_baseline_man_woman+deepwalk.npy".format(
+        np.save(BASE.format(dataset) + "{}_{}/{}_baseline_man_woman+deepwalk_embs.npy".format(
             dataset, directory, dataset),
                embs)
     
     for directory in tqdm(runs, desc=dataset + "_node2vec"):
         embs = get_embs(dataset=dataset, run_no=directory, deepwalk=False)
-        np.save(BASE.format(dataset) + "{}_{}/{}_baseline_man_woman+node2vec.npy".format(
+        np.save(BASE.format(dataset) + "{}_{}/{}_baseline_man_woman+node2vec_embs.npy".format(
             dataset, directory, dataset),
                embs)
         
